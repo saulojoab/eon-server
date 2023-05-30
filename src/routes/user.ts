@@ -208,7 +208,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
     }
   );
 
-  // Remove manga from favorites
+  // Login
   fastify.post(
     "/login",
     async (

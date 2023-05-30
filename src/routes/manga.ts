@@ -169,6 +169,32 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
     }
   );
 
+  // Removes a manga from the currently reading list of the user
+  fastify.delete(
+    "currently-reading/:user_id/:manga_id",
+    async (
+      request: FastifyRequest<{
+        Params: { manga_id: string; user_id: string };
+      }>,
+      reply: FastifyReply
+    ) => {
+      const { manga_id, user_id } = request.params;
+
+      const currentlyReading = await CurrentlyReading.findOneAndDelete({
+        manga_id,
+        user_id,
+      });
+
+      if (!currentlyReading) {
+        return reply.status(HttpStatusCode.NotFound).send({
+          message: "Currently reading not found",
+        });
+      }
+
+      reply.status(HttpStatusCode.Ok).send(currentlyReading);
+    }
+  );
+
   // Updates the currently reading manga of the user
   fastify.put(
     "currently-reading/:user_id/:manga_id",
