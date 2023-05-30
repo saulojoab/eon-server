@@ -3,7 +3,7 @@ import chalk from "chalk";
 import mongoose, { ConnectOptions } from "mongoose";
 import Fastify from "fastify";
 import FastifyCors from "@fastify/cors";
-import { UserRoutes } from "./routes";
+import { MangaRoutes, UserRoutes } from "./routes";
 import { HttpStatusCode } from "axios";
 
 const port = Number(process.env.PORT) || 3000;
@@ -47,6 +47,7 @@ const log = console.log;
     });
 
     fastify.register(UserRoutes, { prefix: "/users" });
+    fastify.register(MangaRoutes, { prefix: "/manga" });
 
     fastify.listen({ port: port, host: "0.0.0.0" }, (e, address) => {
       if (e) throw e;

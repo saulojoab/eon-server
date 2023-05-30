@@ -28,6 +28,7 @@
     "@fastify/cors": "^8.3.0",
     "@types/cors": "^2.8.13",
     "@types/node": "^20.2.5",
+    "argon2": "^0.30.3",
     "axios": "^1.4.0",
     "chalk": "4.1.2",
     "cors": "^2.8.5",

@@ -14,6 +14,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  profilePicture: {
+    type: String,
+    required: false,
+  },
   favorites: [{ type: Schema.Types.ObjectId, ref: "Manga" }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

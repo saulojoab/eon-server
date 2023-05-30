@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
+const todayViewsSchema = new Schema({
+  date: Date,
+  count: Number,
+});
+
 const mangaSchema = new Schema({
   manga_id: {
     type: String,
@@ -19,6 +24,10 @@ const mangaSchema = new Schema({
     required: true,
   },
   views: { type: Number, default: 0 },
+  todayViews: {
+    type: todayViewsSchema,
+    default: { date: new Date(), count: 0 },
+  },
   createdAt: { type: Date, default: Date.now },
 });
 
