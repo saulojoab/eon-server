@@ -242,9 +242,14 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
         });
       }
 
-      reply
-        .status(HttpStatusCode.Ok)
-        .send({ ...userInDatabase, password: undefined });
+      reply.status(HttpStatusCode.Ok).send({
+        username: userInDatabase.username,
+        email: userInDatabase.email,
+        profilePicture: userInDatabase.profilePicture,
+        favorites: userInDatabase.favorites,
+        createdAt: userInDatabase.createdAt,
+        updatedAt: userInDatabase.updatedAt,
+      });
     }
   );
 

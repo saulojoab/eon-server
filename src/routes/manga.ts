@@ -72,13 +72,20 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
         });
       }
 
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+
       try {
         const manga = new Manga({
           manga_id,
           image,
           referer,
           title,
-          views: 0,
+          views: 1,
+          todayViews: {
+            date: today,
+            count: 1,
+          },
         });
 
         await manga.save();
@@ -101,7 +108,9 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
     ) => {
       const { id } = request.params;
 
-      const manga = await Manga.findById(id);
+      console.log(id);
+
+      const manga = await Manga.findOne({ manga_id: id });
 
       if (!manga) {
         return reply.status(HttpStatusCode.NotFound).send({
@@ -109,6 +118,24 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
         });
       }
 
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+
+      if (
+        manga.todayViews?.date?.toDateString() === today.toDateString() &&
+        manga.todayViews?.count
+      ) {
+        manga.todayViews.count += 1;
+      } else {
+        manga.todayViews = {
+          date: today,
+          count: 1,
+        };
+      }
+
+      manga.views += 1;
+
+      await manga.save();
       reply.status(HttpStatusCode.Ok).send(manga);
     }
   );
@@ -136,7 +163,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Adds a manga to the currently reading list of the user
   fastify.post(
-    "currently-reading/",
+    "/currently-reading/",
     async (
       request: FastifyRequest<{ Body: CurrentlyReadingProps }>,
       reply: FastifyReply
@@ -171,7 +198,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Removes a manga from the currently reading list of the user
   fastify.delete(
-    "currently-reading/:user_id/:manga_id",
+    "/currently-reading/:user_id/:manga_id",
     async (
       request: FastifyRequest<{
         Params: { manga_id: string; user_id: string };
@@ -197,7 +224,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Updates the currently reading manga of the user
   fastify.put(
-    "currently-reading/:user_id/:manga_id",
+    "/currently-reading/:user_id/:manga_id",
     async (
       request: FastifyRequest<{
         Params: { manga_id: string; user_id: string };
@@ -249,7 +276,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Gets the currently reading manga list of the user
   fastify.get(
-    "currently-reading/:user_id",
+    "/currently-reading/:user_id",
     async (
       request: FastifyRequest<{ Params: { user_id: string } }>,
       reply: FastifyReply
@@ -316,13 +343,13 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Gets the most viewed manga of the day
   fastify.get(
-    "trending-today",
+    "/trending-today",
     async (_request: FastifyRequest, reply: FastifyReply) => {
       const today = new Date();
       today.setUTCHours(0, 0, 0, 0);
 
       const manga = await Manga.findOne({
-        "todayViews.date": today,
+        "todayViews.date": today.toISOString(),
       }).sort("-todayViews.count");
 
       if (!manga) {
@@ -337,7 +364,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Gets the 10 most viewed mangas
   fastify.get(
-    "trending",
+    "/trending",
     async (_request: FastifyRequest, reply: FastifyReply) => {
       const mangas = await Manga.find().sort("-views").limit(10);
 
