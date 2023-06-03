@@ -243,6 +243,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
       }
 
       reply.status(HttpStatusCode.Ok).send({
+        _id: userInDatabase._id,
         username: userInDatabase.username,
         email: userInDatabase.email,
         profilePicture: userInDatabase.profilePicture,
