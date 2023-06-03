@@ -163,7 +163,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
 
   // Adds a manga to the currently reading list of the user
   fastify.post(
-    "/currently-reading/",
+    "/currently-reading",
     async (
       request: FastifyRequest<{ Body: CurrentlyReadingProps }>,
       reply: FastifyReply
