@@ -171,6 +171,8 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
       const { manga_id, user_id, current_chapter, finished_chapters } =
         request.body;
 
+      console.log(request.body);
+
       if (!manga_id || !user_id || !current_chapter || !finished_chapters) {
         return reply.status(HttpStatusCode.BadRequest).send({
           message: "Missing required fields",
@@ -265,7 +267,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
           { new: true }
         );
 
-        reply.status(HttpStatusCode.Created).send(currentlyReading);
+        reply.status(HttpStatusCode.Ok).send(currentlyReading);
       } catch (error) {
         reply.status(HttpStatusCode.InternalServerError).send({
           message: "Something went wrong",
@@ -283,7 +285,9 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
     ) => {
       const { user_id } = request.params;
 
-      const currentlyReading = await CurrentlyReading.find({ user_id });
+      const currentlyReading = await CurrentlyReading.find({ user_id })
+        .populate("manga_id")
+        .populate("user_id");
 
       if (!currentlyReading) {
         return reply.status(HttpStatusCode.NotFound).send({
