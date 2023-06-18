@@ -210,8 +210,8 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
       const { manga_id, user_id } = request.params;
 
       const currentlyReading = await CurrentlyReading.findOneAndDelete({
-        manga_id,
-        user_id,
+        manga: manga_id,
+        user: user_id,
       });
 
       if (!currentlyReading) {
@@ -244,8 +244,8 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
       }
 
       const currentlyReadingObject = await CurrentlyReading.findOne({
-        manga_id,
-        user_id,
+        manga: manga_id,
+        user: user_id,
       });
 
       if (!currentlyReadingObject) {
@@ -285,9 +285,9 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
     ) => {
       const { user_id } = request.params;
 
-      const currentlyReading = await CurrentlyReading.find({ user_id })
-        .populate("manga_id")
-        .populate("user_id");
+      const currentlyReading = await CurrentlyReading.find({ user: user_id })
+        .populate("manga")
+        .populate("user");
 
       if (!currentlyReading) {
         return reply.status(HttpStatusCode.NotFound).send({

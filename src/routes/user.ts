@@ -237,7 +237,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
       );
 
       if (!isPasswordValid) {
-        return reply.status(HttpStatusCode.BadRequest).send({
+        return reply.status(HttpStatusCode.Unauthorized).send({
           message: "Invalid password",
         });
       }
