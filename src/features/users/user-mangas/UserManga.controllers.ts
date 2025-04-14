@@ -130,7 +130,7 @@ export const addMangaToFavorites = async (
       });
     }
 
-    if (user.favorites.includes(new Types.ObjectId(mangaId))) {
+    if (user.favorites.some((fav) => fav.equals(mangaId))) {
       return reply.status(HttpStatusCode.BadRequest).send({
         message: "Manga already in favorites",
       });
