@@ -1,18 +1,18 @@
 require("dotenv").config();
+import "module-alias/register";
 import chalk from "chalk";
-import mongoose, { ConnectOptions } from "mongoose";
 import Fastify from "fastify";
-import FastifyCors from "@fastify/cors";
-import { MangaRoutes, UserRoutes } from "./routes";
-import { HttpStatusCode } from "axios";
+
+import connectToDatabase from "./utils/connectToDatabase";
+import setupCors from "./utils/setupCors";
+import setupRoutes from "./utils/setupRoutes";
+import { log } from "console";
 
 const port = Number(process.env.PORT) || 3000;
 
-const log = console.log;
-
-(async () => {
+const initializeServer = async () => {
   log(`==================`);
-  log(`=    E  O  N     =`);
+  log(`     E  O  N      `);
   log(`==================`);
   log(chalk.blue.bold(`- Environment: ${process.env.NODE_ENV || "dev"}`));
   log(chalk.bgBlack(`Starting server...\n`));
@@ -22,46 +22,24 @@ const log = console.log;
     logger: true,
   });
 
-  await fastify.register(FastifyCors, {
-    origin: "*",
-    methods: "GET",
+  await setupCors(fastify);
+  await connectToDatabase();
+  setupRoutes(fastify);
+
+  fastify.listen({ port }, (err, address) => {
+    if (err) {
+      log(chalk.bgRedBright("OKNOTOK - Server failed to start:"));
+      log(chalk.bgRedBright(err));
+
+      process.exit(1);
+    }
+
+    log(
+      chalk.bgGreen(
+        `OK COMPUTER - Server is running on ${chalk.white.bgBlue.bold(address)}`
+      )
+    );
   });
+};
 
-  try {
-    await mongoose.connect(`${process.env.CONNECTION_URL}`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as ConnectOptions);
-
-    log(chalk.bgGreen(`OK COMPUTER - Connected to the database!`));
-
-    fastify.get("/", (_, rp) => {
-      rp.status(HttpStatusCode.Ok).send("Welcome to the EON API!");
-    });
-
-    fastify.get("*", (request, reply) => {
-      reply.status(HttpStatusCode.NotFound).send({
-        message: "",
-        error: "page not found",
-      });
-    });
-
-    fastify.register(UserRoutes, { prefix: "/users" });
-    fastify.register(MangaRoutes, { prefix: "/manga" });
-
-    fastify.listen({ port: port, host: "0.0.0.0" }, (e, address) => {
-      if (e) throw e;
-
-      log(
-        chalk.bgGreen(
-          `OK COMPUTER - Server is running on ${chalk.white.bgBlue.bold(
-            address
-          )}`
-        )
-      );
-    });
-  } catch (error) {
-    log(chalk.bgRedBright("OKNOTOK - Something went wrong, check error:"));
-    log(chalk.bgRedBright(error));
-  }
-})();
+initializeServer();

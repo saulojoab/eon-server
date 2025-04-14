@@ -27,6 +27,9 @@
   "bugs": {
     "url": "https://github.com/saulojoab/eon-server/issues"
   },
+  "_moduleAliases": {
+    "src": "./src"
+  },
   "homepage": "https://github.com/saulojoab/eon-server#readme",
   "dependencies": {
     "@fastify/cors": "^8.3.0",
@@ -38,6 +41,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "fastify": "^4.17.0",
+    "module-alias": "^2.2.3",
     "mongoose": "^7.2.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
