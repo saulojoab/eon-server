@@ -21,7 +21,7 @@ export const createUser = async (
   const { username, email, password, profilePicture } = request.body;
 
   if (!username || !email || !password) {
-    reply.status(HttpStatusCode.BadRequest).send({
+    return reply.status(HttpStatusCode.BadRequest).send({
       message: "Missing required fields",
     });
   }
