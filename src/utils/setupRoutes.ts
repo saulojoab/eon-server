@@ -1,4 +1,5 @@
 import { HttpStatusCode } from "axios";
+import { MangaRoutes } from "src/features/mangas/Mangas.routes";
 import { AnalyticsRoutes } from "src/features/users/analytics/Analytics.routes";
 import { CurrentlyReadingRoutes } from "src/features/users/currently-reading/CurrentlyReading.routes";
 import UserMangaRoutes from "src/features/users/user-mangas/UserManga.routes";
@@ -16,6 +17,7 @@ const setupRoutes = (fastify: import("fastify").FastifyInstance) => {
     });
   });
 
+  fastify.register(MangaRoutes, { prefix: "/mangas" });
   fastify.register(UserRoutes, { prefix: "/users" });
   fastify.register(UserMangaRoutes, { prefix: "/user-manga" });
   fastify.register(CurrentlyReadingRoutes, {

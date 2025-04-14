@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/saulojoab/eon-server#readme",
   "dependencies": {
+    "@consumet/extensions": "github:consumet/consumet.ts",
     "@fastify/cors": "^8.3.0",
     "@types/cors": "^2.8.13",
     "@types/node": "^20.2.5",
