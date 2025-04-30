@@ -4,6 +4,7 @@ import { AnalyticsRoutes } from "src/features/users/analytics/Analytics.routes";
 import { CurrentlyReadingRoutes } from "src/features/users/currently-reading/CurrentlyReading.routes";
 import UserMangaRoutes from "src/features/users/user-mangas/UserManga.routes";
 import UserRoutes from "src/features/users/user/User.routes";
+import { UtilRoutes } from "src/features/utils/Utils.routes";
 
 const setupRoutes = (fastify: import("fastify").FastifyInstance) => {
   fastify.get("/", (_, reply) => {
@@ -20,6 +21,7 @@ const setupRoutes = (fastify: import("fastify").FastifyInstance) => {
   fastify.register(MangaRoutes, { prefix: "/mangas" });
   fastify.register(UserRoutes, { prefix: "/users" });
   fastify.register(UserMangaRoutes, { prefix: "/user-manga" });
+  fastify.register(UtilRoutes, { prefix: "/utils" });
   fastify.register(CurrentlyReadingRoutes, {
     prefix: "/user-manga/currently-reading",
   });

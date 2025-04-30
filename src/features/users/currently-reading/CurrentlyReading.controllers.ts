@@ -22,39 +22,6 @@ export const getCurrentlyReadingList = async (
   reply.status(HttpStatusCode.Ok).send(currentlyReading);
 };
 
-export const addToCurrentlyReading = async (
-  request: FastifyRequest<{ Body: ICurrentlyReading }>,
-  reply: FastifyReply
-) => {
-  const { manga_id, user_id, current_chapter, finished_chapters } =
-    request.body;
-
-  console.log(request.body);
-
-  if (!manga_id || !user_id || !current_chapter || !finished_chapters) {
-    return reply.status(HttpStatusCode.BadRequest).send({
-      message: "Missing required fields",
-    });
-  }
-
-  try {
-    const currentlyReading = new CurrentlyReading({
-      manga_id,
-      user_id,
-      current_chapter,
-      finished_chapters,
-    });
-
-    await currentlyReading.save();
-
-    reply.status(HttpStatusCode.Created).send(currentlyReading);
-  } catch (error) {
-    reply.status(HttpStatusCode.InternalServerError).send({
-      message: "Something went wrong",
-    });
-  }
-};
-
 export const removeFromCurrentlyReading = async (
   request: FastifyRequest<{
     Params: { manga_id: string; user_id: string };
@@ -85,9 +52,9 @@ export const updateCurrentlyReading = async (
   reply: FastifyReply
 ) => {
   const { manga_id, user_id } = request.params;
-  const { current_chapter, finished_chapters } = request.body;
+  const { current_chapter, finished_chapter } = request.body;
 
-  if (!current_chapter && !finished_chapters) {
+  if (!current_chapter && !finished_chapter) {
     return reply.status(HttpStatusCode.BadRequest).send({
       message: "Missing required fields",
     });
@@ -99,15 +66,35 @@ export const updateCurrentlyReading = async (
   });
 
   if (!currentlyReadingObject) {
-    return reply.status(HttpStatusCode.NotFound).send({
-      message: "Currently reading not found",
+    const newCurrentlyReading = new CurrentlyReading({
+      manga: manga_id,
+      user: user_id,
+      current_chapter: current_chapter || 1,
+      finished_chapters: [],
     });
+
+    try {
+      await newCurrentlyReading.save();
+      return reply.status(HttpStatusCode.Created).send(newCurrentlyReading);
+    } catch (error) {
+      console.log(error);
+      return reply.status(HttpStatusCode.InternalServerError).send({
+        message: "Something went wrong while adding to currently reading",
+      });
+    }
+  }
+
+  let updatedFinishedChapters = currentlyReadingObject.finished_chapters;
+
+  if (finished_chapter && !updatedFinishedChapters.includes(finished_chapter)) {
+    updatedFinishedChapters = [...updatedFinishedChapters, finished_chapter];
   }
 
   const updatedObject = Object.fromEntries(
-    Object.entries({ current_chapter, finished_chapters }).filter(
-      ([, value]) => value !== undefined
-    )
+    Object.entries({
+      current_chapter,
+      finished_chapters: updatedFinishedChapters,
+    }).filter(([, value]) => value !== undefined)
   );
 
   try {

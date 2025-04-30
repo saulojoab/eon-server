@@ -26,7 +26,7 @@ const initializeServer = async () => {
   await connectToDatabase();
   setupRoutes(fastify);
 
-  fastify.listen({ port }, (err, address) => {
+  fastify.listen({ port, host: "0.0.0.0" }, (err, address) => {
     if (err) {
       log(chalk.bgRedBright("OKNOTOK - Server failed to start:"));
       log(chalk.bgRedBright(err));

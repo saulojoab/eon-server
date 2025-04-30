@@ -161,13 +161,12 @@ export const loginUser = async (
     });
   }
 
-  reply.status(HttpStatusCode.Ok).send({
-    _id: userInDatabase._id,
-    username: userInDatabase.username,
-    email: userInDatabase.email,
-    profilePicture: userInDatabase.profilePicture,
-    favorites: userInDatabase.favorites,
-    createdAt: userInDatabase.createdAt,
-    updatedAt: userInDatabase.updatedAt,
-  });
+  const {
+    password: _,
+    _id,
+    ...userWithoutSensitiveData
+  } = userInDatabase.toObject();
+  reply
+    .status(HttpStatusCode.Ok)
+    .send({ ...userWithoutSensitiveData, id: _id });
 };

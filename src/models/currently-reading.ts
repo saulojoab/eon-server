@@ -3,10 +3,14 @@ const Schema = mongoose.Schema;
 
 const currentlyReadingSchema = new Schema({
   manga: {
-    type: { type: Schema.Types.ObjectId, ref: "Manga", required: true },
+    type: Schema.Types.ObjectId,
+    ref: "Manga",
+    required: true,
   },
   user: {
-    type: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
   current_chapter: {
     type: String,
