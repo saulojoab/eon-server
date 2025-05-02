@@ -1,6 +1,6 @@
 # <samp>EON Server</samp>
 
-<samp>EON Server is a backend API for the EON manga reading application. It provides endpoints for user management, manga tracking, analytics, and more. The server integrates with external manga providers using the [Consumet API](https://github.com/consumet/consumet.ts).</samp>
+<samp>EON Server is a backend API for the [EON manga reading application](https://github.com/saulojoab/eon). It provides endpoints for user management, manga tracking, analytics, and more. The server integrates with external manga providers using the [Consumet API](https://github.com/consumet/consumet.ts).</samp>
 
 ## <samp>Features</samp>
 
